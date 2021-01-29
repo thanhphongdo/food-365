@@ -88,19 +88,19 @@ const news = require('./crawl/data/news.json');
 //         })
 //     }, Math.ceil(index / 5) * 1000);
 // });
-// const newsDetails = [];
-// news.forEach((item, index) => {
-//     setTimeout(() => {
-//         getNews.loadNewsDetail(item.url).then((data) => {
-//             if (data && data.length) {
-//                 newsDetails.push(data);
-//                 fsExtra.writeJSON(`./crawl/data/news-details/${item.id}.json`, data);
-//                 fsExtra.writeJSON(`./crawl/data/news-details.json`, newsDetails);
-//             }
-//         });
-//     }, Math.ceil(index / 2) * 1200);
-// });
+const newsDetails = [];
+news.forEach((item, index) => {
+    setTimeout(() => {
+        getNews.loadNewsDetail(item.url).then((data) => {
+            if (data && data.length) {
+                newsDetails.push(data);
+                fsExtra.writeJSON(`./crawl/data/news-details/${item.id}.json`, data);
+                fsExtra.writeJSON(`./crawl/data/news-details.json`, newsDetails);
+            }
+        });
+    }, Math.ceil(index / 2) * 1200);
+});
 
-getNews.loadNewsDetail('http://www.amthuc365.vn/t9920c185/che-bien-mon-ngon/2011/12/diem-qua-nhung-mon-nem-o-viet-nam.html').then(data => {
-    console.log(data);
-})
+// getNews.loadNewsDetail('http://www.amthuc365.vn/t9920c185/che-bien-mon-ngon/2011/12/diem-qua-nhung-mon-nem-o-viet-nam.html').then(data => {
+//     console.log(data);
+// })

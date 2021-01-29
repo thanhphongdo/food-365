@@ -64,10 +64,16 @@ function loadNewsDetail(url) {
         //     content = $('.tinimce-content__new').children().first();
         // }
         let content = [];
-        if ($('.tinimce-content__new').find('table').length) {
+        let contentEle = $('.tinimce-content__new');
+        for (var i = 0; i < 3; i++) {
+            if (contentEle.children().length == 1 && contentEle.children().first().prop('tagName') == 'DIV') {
+                contentEle = contentEle.children().first();
+            }
+        }
+        if (contentEle.find('table').length) {
             return [];
         }
-        $('.tinimce-content__new').children().each((index, item) => {
+        contentEle.children().each((index, item) => {
             if ($(item).prop('tagName') == 'DIV') {
                 if (!$(item).children().length || $(item).children().length == 1) {
                     content.push(item);
