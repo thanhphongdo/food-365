@@ -88,19 +88,46 @@ const news = require('./crawl/data/news.json');
 //         })
 //     }, Math.ceil(index / 5) * 1000);
 // });
-const newsDetails = [];
-news.forEach((item, index) => {
-    setTimeout(() => {
-        getNews.loadNewsDetail(item.url).then((data) => {
-            if (data && data.length) {
-                newsDetails.push(data);
-                fsExtra.writeJSON(`./crawl/data/news-details/${item.id}.json`, data);
-                fsExtra.writeJSON(`./crawl/data/news-details.json`, newsDetails);
-            }
-        });
-    }, Math.ceil(index / 2) * 1200);
-});
+// const newsDetails = [];
+// news.forEach((item, index) => {
+//     setTimeout(() => {
+//         getNews.loadNewsDetail(item.url).then((data) => {
+//             if (data && data.length) {
+//                 newsDetails.push(data);
+//                 fsExtra.writeJSON(`./crawl/data/news-details/${item.id}.json`, data);
+//                 fsExtra.writeJSON(`./crawl/data/news-details.json`, newsDetails);
+//             }
+//         });
+//     }, Math.ceil(index / 2) * 1200);
+// });
 
-// getNews.loadNewsDetail('http://www.amthuc365.vn/t9920c185/che-bien-mon-ngon/2011/12/diem-qua-nhung-mon-nem-o-viet-nam.html').then(data => {
-//     console.log(data);
-// })
+
+const newsDetails = require('./crawl/data/news-details.json');
+
+var countError = 0;
+newsDetails.forEach(item => {
+    item.forEach((item, index) => {
+        if (item.type == 'text' || !item.src) {
+            return;
+        }
+        setTimeout(() => {
+            fsExtra.pathExists(`./crawl/data/news/details/${item.id}.jpg`).then(data => {
+                if (!data) {
+                    var options = {
+                        directory: './crawl/data/news/details',
+                        filename: `${item.id}.jpg`
+                    }
+
+                    download(item.src, options, function (err) {
+                        if (err) {
+                            countError++;
+                            console.log('ERROR - ' + countError + ' - ' + item.src);
+                        }
+                    })
+                }
+            }).catch(err => {
+                console.log(err);
+            });
+        }, index * 500);
+    });
+})
